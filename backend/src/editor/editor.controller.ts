@@ -14,6 +14,7 @@ import { CreateNewsDto } from './dto/create-news.dto';
 import { ApproveNewsDto } from './dto/approve-news.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
+import { UploadEpaperDto } from './dto/upload-epaper.dto';
 
 @Controller('editor')
 export class EditorController {
@@ -68,5 +69,20 @@ export class EditorController {
   @Delete('categories/:id')
   deleteCategoryById(@Param('id') id: string): object {
     return this.editorService.deleteCategoryById(id);
+  }
+
+  @Post('epapers')
+  uploadEpaper(@Body() uploadEpaperDto: UploadEpaperDto) {
+    return this.editorService.uploadEpaper(uploadEpaperDto);
+  }
+
+  @Get('epapers/:id')
+  showEpaperById(@Param('id') id: string): object {
+    return this.editorService.showEpaperById(id);
+  }
+
+  @Delete('epapers/:id')
+  deleteEpaperById(@Param('id') id: string): object {
+    return this.editorService.deleteEpaperById(id);
   }
 }
