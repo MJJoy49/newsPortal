@@ -1,7 +1,9 @@
 export class CreateNewsDto {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   content: string;
-  categoryId: string;
-  featuredImage: string;
+  categoryId: number;
+  tagsId?: number[];
+  thumbnailUrl?: string;
+  isBreaking?: boolean;
 }
