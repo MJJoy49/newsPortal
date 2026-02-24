@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   Put,
+  Patch,
 } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
+import { UpdateTagesDTO } from './dto/update.tages.dto';
+import { UpdateProfileDTO } from './dto/update.profile.dto';
 
 @Controller('reporter')
 export class ReporterController {
@@ -68,4 +71,30 @@ export class ReporterController {
   submitOpinion(@Body() submitOpinion: SubmitOpinionDTO) {
     return this.reporterService.SubmitOpinion(submitOpinion);
   }
+  @Patch('news/:id/tags')
+  updateTages(
+    @Param('id') newsId: string,
+    @Body() updateTagesDTO: UpdateTagesDTO,
+  ): object {
+    return this.reporterService.updateTagesDTO(newsId, updateTagesDTO);
+  }
+  @Patch('profile')
+  updateProfile(@Body() updateProfileDTO: UpdateProfileDTO) {
+    return this.reporterService.updateProfile(updateProfileDTO);
+  
+  
+  }
+
+  @Get('dashboard')
+  getDashboard()
+  {
+    return this.reporterService.getDashboard();
+  }
+
+  @Get('news/:id/share-count')
+  getShareCount(@Param('id') id: string)
+  {
+    return this.reporterService.getShareCount(id);
+  }
+
 }

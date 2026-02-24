@@ -1,12 +1,14 @@
+import { UpdateProfileDTO } from './dto/update.profile.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
 import { Injectable } from '@nestjs/common';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
+import { UpdateTagesDTO } from './dto/update.tages.dto';
 
 @Injectable()
 export class ReporterService {
   submitNews(contentData: SubmitNewsDTO): object {
-    console.log(contentData.title);
+    // console.log(contentData.title);
     return {
       data: {
         status: 'pending',
@@ -26,12 +28,12 @@ export class ReporterService {
     // console.log(type);
     return {
       data: {
-        media: 'hello this is media',
+        media: `hello this is ${type}`,
       },
     };
   }
 
-  getnewsByID(id: string) {
+  getnewsByID(id: string): object {
     // console.log(id);
     return {
       data: {
@@ -40,12 +42,12 @@ export class ReporterService {
     };
   }
 
-  deleteMediaByID(id: string) {
+  deleteMediaByID(id: string): object {
     let result: object;
     // console.log(id);
     if (id == 'E-01') {
       result = {
-        success: 'this data is deleted',
+        success: `this data is deleted ${id}`,
       };
     } else {
       result = {
@@ -55,16 +57,15 @@ export class ReporterService {
     return result;
   }
   editNews(id: string, updatenews: UpdateOwnNewsDTO): object {
-    if (updatenews.isPublish) {
-      return { news: 'news is publish' };
-    } else if (
-      !(updatenews.categoryId == 'Draft' || updatenews.categoryId == 'pending')
-    ) {
+    if (!updatenews) {
       return {
-        errorMessage: " Can'\t edit this Artical ",
+        error: 'DTO is not comming here!!!',
       };
     }
 
+    if (updatenews.isPublish) {
+      return { news: 'news is publish' };
+    }
     return {
       success: true,
     };
@@ -82,12 +83,45 @@ export class ReporterService {
     };
   }
 
-  SubmitOpinion(submitOpinion: SubmitOpinionDTO) {
+  SubmitOpinion(submitOpinion: SubmitOpinionDTO): object {
     console.log(submitOpinion.title);
     return {
       success: {
         Status: 'pending',
       },
     };
+  }
+
+  updateTagesDTO(id: string, updateTagesDTO: UpdateTagesDTO): object {
+    console.log(updateTagesDTO.tagIds.at(1));
+    return {
+      success: true,
+      message: 'News tags updated successfully',
+    };
+  }
+
+  updateProfile(updateReporterDTO: UpdateProfileDTO): object {
+    console.log(updateReporterDTO.address.country);
+    return {
+      success: true,
+      message: 'profile is successfully update',
+    };
+  }
+
+  getDashboard(): object {
+    return {
+      data: {
+        today: {
+          submit: 3,
+        },
+        thismonth: {
+          submit: 45,
+        },
+      },
+    };
+  }
+
+  getShareCount(id: string): object {
+    return { data: { facebook: 45, whatsapp: 89, total: 151 } };
   }
 }
