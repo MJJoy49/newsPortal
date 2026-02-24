@@ -17,6 +17,8 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { UploadEpaperDto } from './dto/upload-epaper.dto';
 import { CreateTagDto } from './dto/create-tag.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateTagDto } from './dto/update-tag.dto';
 
 @Controller('editor')
 export class EditorController {
@@ -32,7 +34,7 @@ export class EditorController {
     @Query('status') status?: string,
     @Query('categoryId') categoryId?: number,
     @Query('page') page?: number,
-    @Query('limit ') limit?: number,
+    @Query('limit') limit?: number,
   ): object {
     return this.editorService.showNewsList(status, categoryId, page, limit);
   }
@@ -73,6 +75,14 @@ export class EditorController {
     return this.editorService.deleteCategoryById(id);
   }
 
+  @Patch('categories/:id')
+  updateCategoryById(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ): object {
+    return this.editorService.updateCategoryById(id, updateCategoryDto);
+  }
+
   @Post('epapers')
   uploadEpaper(@Body() uploadEpaperDto: UploadEpaperDto) {
     console.log(uploadEpaperDto.title);
@@ -90,12 +100,12 @@ export class EditorController {
   }
 
   @Post('tags')
-  createTag(@Body() createTagDto:CreateTagDto): object{
+  createTag(@Body() createTagDto: CreateTagDto): object {
     return this.editorService.createTag(createTagDto);
   }
 
   @Get('tags')
-  getAllTags(): object{
+  getAllTags(): object {
     return this.editorService.getAllTags();
   }
 
@@ -104,5 +114,11 @@ export class EditorController {
     return this.editorService.deleteTag(id);
   }
 
-  
+  @Patch('tags/:id')
+  updateTag(
+    @Param('id') id: string,
+    @Body() updateTagDto: UpdateTagDto,
+  ): object {
+    return this.editorService.updateTag(id, updateTagDto);
+  }
 }
