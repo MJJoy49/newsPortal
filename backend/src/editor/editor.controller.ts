@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -15,6 +16,7 @@ import { ApproveNewsDto } from './dto/approve-news.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { UploadEpaperDto } from './dto/upload-epaper.dto';
+import { CreateTagDto } from './dto/create-tag.dto';
 
 @Controller('editor')
 export class EditorController {
@@ -73,6 +75,7 @@ export class EditorController {
 
   @Post('epapers')
   uploadEpaper(@Body() uploadEpaperDto: UploadEpaperDto) {
+    console.log(uploadEpaperDto.title);
     return this.editorService.uploadEpaper(uploadEpaperDto);
   }
 
@@ -85,4 +88,21 @@ export class EditorController {
   deleteEpaperById(@Param('id') id: string): object {
     return this.editorService.deleteEpaperById(id);
   }
+
+  @Post('tags')
+  createTag(@Body() createTagDto:CreateTagDto): object{
+    return this.editorService.createTag(createTagDto);
+  }
+
+  @Get('tags')
+  getAllTags(): object{
+    return this.editorService.getAllTags();
+  }
+
+  @Delete('tags/:id')
+  deleteTag(@Param('id') id: string): object {
+    return this.editorService.deleteTag(id);
+  }
+
+  
 }
