@@ -6,6 +6,8 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { UploadEpaperDto } from './dto/upload-epaper.dto';
 import { CreateTagDto } from './dto/create-tag.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateTagDto } from './dto/update-tag.dto';
 
 @Injectable()
 export class EditorService {
@@ -50,6 +52,13 @@ export class EditorService {
   deleteCategoryById(id: string): object {
     return { message: `This will delete category ${id}` };
   }
+  updateCategoryById(id: string, updateCategoryDto: UpdateCategoryDto): object {
+    return {
+      message: `This will update category ${id}`,
+      name: updateCategoryDto.name,
+      description: updateCategoryDto.description,
+    };
+  }
   uploadEpaper(uploadEpaperDto: UploadEpaperDto): object {
     return { message: `This will upload Epaper ${uploadEpaperDto.title}` };
   }
@@ -67,5 +76,11 @@ export class EditorService {
   }
   deleteTag(id: string): object {
     return {message: `Thiss will delete tag ${id}`}
+  }
+  updateTag(id: string, updateTagDto: UpdateTagDto): object {
+    return {
+      message: `This will update tag ${id}`,
+      name: updateTagDto.name,
+    };
   }
 }
