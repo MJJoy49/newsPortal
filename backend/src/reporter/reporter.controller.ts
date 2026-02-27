@@ -8,6 +8,10 @@ import {
   Delete,
   Put,
   Patch,
+  ValidationPipe,
+  UseInterceptors,
+  ParseIntPipe,
+  UploadedFile,
 } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
@@ -15,6 +19,9 @@ import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
 import { UpdateTagesDTO } from './dto/update.tages.dto';
 import { UpdateProfileDTO } from './dto/update.profile.dto';
+import { CreateMediaDTO } from './dto/Create.media.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import multer, { diskStorage, MulterError } from 'multer';
 
 @Controller('reporter')
 export class ReporterController {
@@ -23,39 +30,39 @@ export class ReporterController {
     this.reporterService = reporterService;
   }
 
-  @Post('news')
-  newsSubmit(@Body() contentData: SubmitNewsDTO): object {
-    return this.reporterService.submitNews(contentData);
+  @Post('news') //1
+  createNews(@Body() contentData: SubmitNewsDTO): object {
+    return this.reporterService.createNews(contentData);
   }
 
-  @Get('news')
+  @Get('news') //2
   getNews(
     @Query('status') status: string,
-    @Query('page') page: number,
+    @Query('page', ParseIntPipe) page: number,
   ): object {
     // console.log(status, page);
     return this.reporterService.getNews(status, page);
   }
 
-  @Get('media')
+  @Get('media') //3
   getMedia(@Query('type') type: string): object {
     // console.log(type);
     return this.reporterService.getMedia(type);
   }
 
-  @Get('news/:id')
+  @Get('news/:id') //4
   getNewsByID(@Param('id') id: string): object {
     // console.log(id);
     return this.reporterService.getnewsByID(id);
   }
 
-  @Delete('media/:id')
+  @Delete('media/:id') //5
   deleteMediaByID(@Param('id') id: string): object {
     // console.log(id);
     return this.reporterService.deleteMediaByID(id);
   }
 
-  @Put('news/:id')
+  @Put('news/:id') //6
   editNews(
     @Param('id') id: string,
     @Body() updatenews: UpdateOwnNewsDTO,
@@ -63,38 +70,62 @@ export class ReporterController {
     return this.reporterService.editNews(id, updatenews);
   }
 
-  @Get('profile')
+  @Get('profile') //7
   getProfile(): object {
     return this.reporterService.getProfile();
   }
-  @Post('opinion')
-  submitOpinion(@Body() submitOpinion: SubmitOpinionDTO) {
+  @Post('opinion') //8
+  submitOpinion(@Body(new ValidationPipe()) submitOpinion: SubmitOpinionDTO) {
     return this.reporterService.SubmitOpinion(submitOpinion);
   }
-  @Patch('news/:id/tags')
+  @Patch('news/:id/tags') //9
   updateTages(
     @Param('id') newsId: string,
     @Body() updateTagesDTO: UpdateTagesDTO,
   ): object {
     return this.reporterService.updateTagesDTO(newsId, updateTagesDTO);
   }
-  @Patch('profile')
-  updateProfile(@Body() updateProfileDTO: UpdateProfileDTO) {
-    return this.reporterService.updateProfile(updateProfileDTO);
-  
-  
+  @Patch('profile') //10
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (_res, file, cb) => {
+        if (file.originalname.endsWith('.pdf')) {
+          cb(null, true);
+        } else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'file'), false);
+        }
+      },
+      limits: {
+        fileSize: 3 * 1024 * 1024, //30000
+      },
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          cb(null, Date.now() + '-' + file.originalname);
+          console.log(file.originalname);
+        },
+      }),
+    }),
+  )
+  updateProfile(
+    @Body(new ValidationPipe()) updateProfileDTO: UpdateProfileDTO,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    return this.reporterService.updateProfile(updateProfileDTO, file);
   }
 
-  @Get('dashboard')
-  getDashboard()
-  {
+  @Get('dashboard') //11
+  getDashboard() {
     return this.reporterService.getDashboard();
   }
 
-  @Get('news/:id/share-count')
-  getShareCount(@Param('id') id: string)
-  {
+  @Get('news/:id/share-count') //12
+  getShareCount(@Param('id') id: string) {
     return this.reporterService.getShareCount(id);
   }
 
+  @Post('media')
+  createMedia(@Body() createMediaDTO: CreateMediaDTO) {
+    return this.reporterService.createMedia(createMediaDTO);
+  }
 }

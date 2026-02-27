@@ -1,3 +1,4 @@
+import { CreateMediaDTO } from './dto/Create.media.dto';
 import { UpdateProfileDTO } from './dto/update.profile.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
 import { Injectable } from '@nestjs/common';
@@ -7,7 +8,7 @@ import { UpdateTagesDTO } from './dto/update.tages.dto';
 
 @Injectable()
 export class ReporterService {
-  submitNews(contentData: SubmitNewsDTO): object {
+  createNews(contentData: SubmitNewsDTO): object {
     // console.log(contentData.title);
     return {
       data: {
@@ -100,8 +101,8 @@ export class ReporterService {
     };
   }
 
-  updateProfile(updateReporterDTO: UpdateProfileDTO): object {
-    console.log(updateReporterDTO.address.country);
+  updateProfile(updateReporterDTO: UpdateProfileDTO, file? : Express.Multer.File): object {
+    // console.log(file?.originalname);
     return {
       success: true,
       message: 'profile is successfully update',
@@ -123,5 +124,9 @@ export class ReporterService {
 
   getShareCount(id: string): object {
     return { data: { facebook: 45, whatsapp: 89, total: 151 } };
+  }
+
+  createMedia(createMediaDto: CreateMediaDTO) {
+    return { data: { url: '/uploads/media/flood.jpg' } };
   }
 }
