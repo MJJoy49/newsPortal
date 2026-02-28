@@ -9,6 +9,8 @@ import {
   Delete,
   Query,
   Put,
+  ParseUUIDPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { EditorService } from './editor.service';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -32,34 +34,34 @@ export class EditorController {
   @Get('news')
   showNewsList(
     @Query('status') status?: string,
-    @Query('categoryId') categoryId?: number,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
+    @Query('categoryId', ParseUUIDPipe) categoryId?: string,
+    @Query('page', ParseIntPipe) page?: number,
+    @Query('limit', ParseIntPipe) limit?: number,
   ): object {
     return this.editorService.showNewsList(status, categoryId, page, limit);
   }
 
-  @Get('news/:id')
-  showNewsById(@Param('id') id: string): object {
+  @Get('news/:id') // UUID: 550e8400-e29b-41d4-a716-446655440000
+  showNewsById(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.showNewsById(id);
   }
 
   @Put('news/:id')
   updateNews(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateNewsDto: UpdateNewsDto,
   ): object {
     return this.editorService.updateNews(id, updateNewsDto);
   }
 
   @Delete('news/:id')
-  deleteNewsById(@Param('id') id: string): object {
+  deleteNewsById(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.deleteNewsById(id);
   }
 
   @Patch('news/:id/status')
   approveOrReject(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() approveNewsDto: ApproveNewsDto,
   ) {
     return this.editorService.approveOrReject(id, approveNewsDto);
@@ -71,13 +73,13 @@ export class EditorController {
   }
 
   @Delete('categories/:id')
-  deleteCategoryById(@Param('id') id: string): object {
+  deleteCategoryById(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.deleteCategoryById(id);
   }
 
   @Patch('categories/:id')
   updateCategoryById(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): object {
     return this.editorService.updateCategoryById(id, updateCategoryDto);
@@ -90,12 +92,12 @@ export class EditorController {
   }
 
   @Get('epapers/:id')
-  showEpaperById(@Param('id') id: string): object {
+  showEpaperById(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.showEpaperById(id);
   }
 
   @Delete('epapers/:id')
-  deleteEpaperById(@Param('id') id: string): object {
+  deleteEpaperById(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.deleteEpaperById(id);
   }
 
@@ -110,15 +112,19 @@ export class EditorController {
   }
 
   @Delete('tags/:id')
-  deleteTag(@Param('id') id: string): object {
+  deleteTag(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.deleteTag(id);
   }
 
   @Patch('tags/:id')
   updateTag(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateTagDto: UpdateTagDto,
   ): object {
     return this.editorService.updateTag(id, updateTagDto);
   }
+  @Get('news/:id/comments')
+getNewsComments(@Param('id', ParseUUIDPipe) id: string): object {
+  return this.editorService.getNewsComments(id);
+}
 }
