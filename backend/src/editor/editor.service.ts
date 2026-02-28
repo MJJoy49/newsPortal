@@ -20,7 +20,7 @@ export class EditorService {
   }
   showNewsList(
     status?: string,
-    categoryId?: number,
+    categoryId?: string,
     page?: number,
     limit?: number,
   ): object {
@@ -82,5 +82,8 @@ export class EditorService {
       message: `This will update tag ${id}`,
       name: updateTagDto.name,
     };
+  }
+  getNewsComments(id: string): object {
+    return {message: `This will show all the comment of news ${id}`}
   }
 }
