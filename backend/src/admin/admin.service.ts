@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -16,66 +18,63 @@ import { UserStatus } from './enums/user-status.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { IApiResponse } from './interfaces/api-response.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ActivityAction } from './enums/activity-action.enum';
-import { IActivityLog } from './interfaces/activity-log.interface';
 
 //----------------↟↟↟↟--imports---------
+
+enum ActivityAction {
+  USER_CREATED = 'USER_CREATED',
+  USER_UPDATED = 'USER_UPDATED',
+  USER_DELETED = 'USER_DELETED',
+  USER_STATUS_CHANGED = 'USER_STATUS_CHANGED',
+  LOGIN = 'LOGIN',
+  LOGOUT = 'LOGOUT',
+}
+
+interface IActivityLog {
+  id: string;
+  userId: string;
+  action: ActivityAction;
+  details?: string;
+  targetId?: string;
+  createdAt: Date;
+}
+//-------------------------------------
+
+
 
 @Injectable()
 export class AdminService {
   // demo dataset
   private usersDataSet: IUser[] = [
     {
-      id: 'user-001',
-      name: 'Admin User',
-      email: 'admin@newsportal.com',
-      password: '123456',
-      role: UserRole.ADMIN,
-      status: UserStatus.ACTIVE,
-      phone: '01700000001',
-      designation: 'Admin',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 'user-002',
-      name: 'John Reporter',
-      email: 'reporter1@newsportal.com',
-      password: '123456',
-      role: UserRole.REPORTER,
-      status: UserStatus.ACTIVE,
-      phone: '01700000002',
-      designation: 'Senior Reporter',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 'user-003',
-      name: 'Admin User',
-      email: 'admin@newsportal.com',
-      password: '123456',
-      role: UserRole.ADMIN,
-      status: UserStatus.ACTIVE,
-      phone: '01700000001',
-      designation: 'Admin',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: 'user-004',
-      name: 'John Reporter',
-      email: 'reporter1@newsportal.com',
-      password: '123456',
-      role: UserRole.REPORTER,
-      status: UserStatus.ACTIVE,
-      phone: '01700000002',
-      designation: 'Senior Reporter',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
+    id: 'user-001',
+    name: 'Admin User',
+    email: 'admin@newsportal.com',
+    password: '123456',
+    role: UserRole.ADMIN,
+    status: UserStatus.ACTIVE,
+    gender: 'male',                  
+    phone: '01700000001',
+    designation: 'Admin',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    id: 'user-002',
+    name: 'John Reporter',
+    email: 'reporter1@newsportal.com',
+    password: '123456',
+    role: UserRole.REPORTER,
+    status: UserStatus.ACTIVE,
+    gender: 'male',                  
+    phone: '01700000002',
+    designation: 'Senior Reporter',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
   ];
 
-  // simple in-memory activity log dataset (needed because you call addActivityLog)
+  // activity log dataset
   private activityLogsDataSet: IActivityLog[] = [];
 
   // (createUser) 01: POST /admin/users
@@ -87,6 +86,8 @@ export class AdminService {
 
     return this.formatUserResponse(newUser);
   }
+
+  
 
   //-------------(createUser) helper functions---------------------
   private createUserEntity(dto: CreateUserDto): IUser {
@@ -224,11 +225,13 @@ export class AdminService {
   async deleteUser(id: string, currentUserId: string): Promise<IApiResponse> {
     // prevent self delete
     if (id === currentUserId) {
+
       throw new ForbiddenException({
         success: false,
         message: 'You cannot delete yourself',
         error: 'SELF_DELETE_NOT_ALLOWED',
       });
+
     }
 
     const index = this.usersDataSet.findIndex((u) => u.id === id);
@@ -256,7 +259,7 @@ export class AdminService {
     };
   }
 
-  // simple helper: add activity log to in-memory array
+  // simple helper: add activity
   private addActivityLog(
     userId: string,
     action: ActivityAction,

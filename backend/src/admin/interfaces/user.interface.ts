@@ -9,6 +9,7 @@ export interface IUser {
   password: string; // text for now
   role: UserRole;
   status: UserStatus;
+  gender: string;
   phone?: string;
   designation?: string;
   createdAt: Date;

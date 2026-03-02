@@ -1,27 +1,34 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable prettier/prettier */
-import { IsEmail, IsEnum, IsOptional, IsString, MinLength } from "class-validator"
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { UserRole } from "../enums/user-role.enum";
 
-export class CreateUserDto{
-    @IsString()
-    name: string;
+export class CreateUserDto {
+  
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsEmail()
-    email: string;
+  @IsString()
+  @IsNotEmpty()
+  email: string;
 
-    @IsString()
-    @MinLength(6)
-    password: string;
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 
-    @IsEnum(UserRole)
-    role: UserRole;
+  @IsString()
+  @IsNotEmpty()
+  role: UserRole;
 
-    @IsOptional()
-    @IsString()
-    phone?: string;
+  @IsString()
+  @IsNotEmpty()
+  gender: string;          
 
-    @IsOptional()
-    @IsString()
-    designation?: string;
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsString()
+  designation?: string;
 }

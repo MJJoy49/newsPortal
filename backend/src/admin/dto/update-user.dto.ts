@@ -1,25 +1,24 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsOptional, IsString, IsEmail, IsEnum } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
 import { UserRole } from "../enums/user-role.enum";
-import { UserStatus } from "../enums/user-status.enum";
 
 export class UpdateUserDto {
+  
   @IsOptional()
   @IsString()
   name?: string;
 
   @IsOptional()
-  @IsEmail()
+  @IsString()          
   email?: string;
 
   @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole;
+  @IsString()          
+  password?: string;
 
   @IsOptional()
-  @IsEnum(UserStatus)
-  status?: UserStatus;
+  @IsString()          
+  role?: UserRole;
 
   @IsOptional()
   @IsString()
