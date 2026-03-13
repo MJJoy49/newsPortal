@@ -1,16 +1,16 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class SubmitOpinionDTO {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Title is empty.' })
   @IsString({
     message: 'Title Should be a string value',
   })
-  @MinLength(3, {
-    message: 'lenght of title must be greater then 3 Character',
+  @MinLength(5, {
+    message: 'lenght of title must be greater then 5 Character',
   })
   title: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Opinion is empty.' })
   @IsString({
     message: 'Opinion should be a string value',
   })

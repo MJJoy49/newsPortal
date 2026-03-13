@@ -101,7 +101,10 @@ export class ReporterService {
     };
   }
 
-  updateProfile(updateReporterDTO: UpdateProfileDTO, file? : Express.Multer.File): object {
+  updateProfile(
+    updateReporterDTO: UpdateProfileDTO,
+    file?: Express.Multer.File,
+  ): object {
     // console.log(file?.originalname);
     return {
       success: true,
@@ -127,6 +130,6 @@ export class ReporterService {
   }
 
   createMedia(createMediaDto: CreateMediaDTO) {
-    return { data: { url: '/uploads/media/flood.jpg' } };
+    return { data: { url: createMediaDto.url } };
   }
 }
