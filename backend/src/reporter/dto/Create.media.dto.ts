@@ -22,9 +22,5 @@ export class CreateMediaDTO {
   @IsString({ message: 'title should be string!' })
   @MinLength(5, { message: ' Title must be greater then 5 character' })
   alterText: string;
-  @IsString()
-  @Matches(/^E-[0-9]*$/, {
-    message: 'Id format is match. example: E-01',
-  })
-  uploadById: string;
+
 }
