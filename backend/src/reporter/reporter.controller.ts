@@ -19,7 +19,7 @@ import { ReporterService } from './reporter.service';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
-import { UpdateTagesDTO } from './dto/update.tages.dto';
+import { UpdateTagsDTO } from './dto/update.tages.dto';
 import { UpdateProfileDTO } from './dto/update.profile.dto';
 import { CreateMediaDTO } from './dto/Create.media.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -104,7 +104,7 @@ export class ReporterController {
         whitelist: true,
       }),
     )
-    updateTagesDTO: UpdateTagesDTO,
+    updateTagesDTO: UpdateTagsDTO,
   ): object {
     return this.reporterService.updateTagesDTO(newsId, updateTagesDTO);
   }

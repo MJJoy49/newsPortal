@@ -4,7 +4,7 @@ import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
 import { Injectable } from '@nestjs/common';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
-import { UpdateTagesDTO } from './dto/update.tages.dto';
+import { UpdateTagsDTO } from './dto/update.tages.dto';
 
 @Injectable()
 export class ReporterService {
@@ -93,7 +93,7 @@ export class ReporterService {
     };
   }
 
-  updateTagesDTO(id: string, updateTagesDTO: UpdateTagesDTO): object {
+  updateTagesDTO(id: string, updateTagesDTO: UpdateTagsDTO): object {
     console.log(updateTagesDTO.tagIds.at(1));
     return {
       success: true,
