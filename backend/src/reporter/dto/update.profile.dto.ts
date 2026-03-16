@@ -10,10 +10,6 @@ import { Transform, Type } from 'class-transformer';
 import { PasswordValidator } from '../validate/password.validator';
 
 export class UpdateProfileDTO {
-  @IsNotEmpty({ message: 'id is empty!!!' })
-  @IsString()
-  id: string;
-
   @IsNotEmpty({ message: 'Name is empty!!!' })
   @IsString({ message: 'Name is not string format' })
   @MinLength(3, { message: 'Name must be greater then 3 charactor' })

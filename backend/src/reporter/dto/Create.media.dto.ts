@@ -10,11 +10,6 @@ import { CreateMediaType } from '../enums/createMedia.enum';
 import { Type, Transform } from 'class-transformer';
 
 export class CreateMediaDTO {
-  @IsString()
-  @Matches(/^M-[0-9]*$/, {
-    message: 'Id format is match. example: M-01',
-  })
-  id: string;
   @IsString({ message: 'title should be string!' })
   @MinLength(5, { message: ' Title must be greater then 5 character' })
   title: string;
