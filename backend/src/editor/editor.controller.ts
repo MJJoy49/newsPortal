@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -86,6 +87,7 @@ export class EditorController {
 
   @Post('epapers')
   uploadEpaper(@Body() uploadEpaperDto: UploadEpaperDto) {
+    console.log(uploadEpaperDto.title);
     return this.editorService.uploadEpaper(uploadEpaperDto);
   }
 
