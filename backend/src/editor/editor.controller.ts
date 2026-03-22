@@ -150,6 +150,7 @@ export class EditorController {
   ): object {
     return this.editorService.updateTag(id, updateTagDto);
   }
+
   @Get('news/:id/comments')
   getNewsComments(@Param('id', ParseUUIDPipe) id: string): object {
     return this.editorService.getNewsComments(id);

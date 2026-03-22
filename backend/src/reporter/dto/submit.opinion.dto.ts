@@ -1,5 +1,4 @@
-export class SubmitOpinionDTO{
-    title : string;
-    type : string;
-
+export class SubmitOpinionDTO {
+  title: string;
+  type: string;
 }
