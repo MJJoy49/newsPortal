@@ -1,9 +1,13 @@
+/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { ApproveNewsDto } from './dto/approve-news.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { UploadEpaperDto } from './dto/upload-epaper.dto';
+import { CreateTagDto } from './dto/create-tag.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+import { UpdateTagDto } from './dto/update-tag.dto';
 
 @Injectable()
 export class EditorService {
@@ -16,7 +20,7 @@ export class EditorService {
   }
   showNewsList(
     status?: string,
-    categoryId?: number,
+    categoryId?: string,
     page?: number,
     limit?: number,
   ): object {
@@ -48,13 +52,35 @@ export class EditorService {
   deleteCategoryById(id: string): object {
     return { message: `This will delete category ${id}` };
   }
+  updateCategoryById(id: string, updateCategoryDto: UpdateCategoryDto): object {
+    return {
+      message: `This will update category ${id}, name: ${updateCategoryDto.name}`,
+    };
+  }
   uploadEpaper(uploadEpaperDto: UploadEpaperDto): object {
     return { message: `This will upload Epaper ${uploadEpaperDto.title}` };
   }
   showEpaperById(id: string): object {
-    return {message: `This will show an epaper ${id}`}
+    return { message: `This will show an epaper ${id}` };
   }
   deleteEpaperById(id: string): object {
-    return { message: `This will delete an epaper ${id}` }
+    return { message: `This will delete an epaper ${id}` };
+  }
+  createTag(createTagDto: CreateTagDto): object {
+    return { message: `This will create a tag ${createTagDto.name}` };
+  }
+  getAllTags(): object {
+    return { message: `This will get all tags` };
+  }
+  deleteTag(id: string): object {
+    return { message: `This will delete tag ${id}` };
+  }
+  updateTag(id: string, updateTagDto: UpdateTagDto): object {
+    return {
+      message: `This will update tag ${id}, name: ${updateTagDto.name}`,
+    };
+  }
+  getNewsComments(id: string): object {
+    return { message: `This will show all the comment of news ${id}` };
   }
 }

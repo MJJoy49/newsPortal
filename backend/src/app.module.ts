@@ -8,6 +8,9 @@ import { PublicModule } from './public/public.module';
 
 @Module({
   imports: [EditorModule, ReporterModule,AdminModule,PublicModule],
+
+@Module({
+  imports: [EditorModule, ReporterModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })
