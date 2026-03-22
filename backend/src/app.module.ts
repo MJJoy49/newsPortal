@@ -5,9 +5,8 @@ import { ReporterModule } from './reporter/reporter.module';
 import { EditorModule } from './editor/editor.module';
 import { AdminModule } from './admin/admin.module';
 
-
 @Module({
-  imports: [EditorModule, ReporterModule,AdminModule],
+  imports: [EditorModule, ReporterModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

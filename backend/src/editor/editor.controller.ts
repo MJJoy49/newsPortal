@@ -11,8 +11,6 @@ import {
   Put,
   ParseUUIDPipe,
   ParseIntPipe,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { EditorService } from './editor.service';
 import { CreateNewsDto } from './dto/create-news.dto';
@@ -125,8 +123,9 @@ export class EditorController {
   ): object {
     return this.editorService.updateTag(id, updateTagDto);
   }
+
   @Get('news/:id/comments')
-getNewsComments(@Param('id', ParseUUIDPipe) id: string): object {
-  return this.editorService.getNewsComments(id);
-}
+  getNewsComments(@Param('id', ParseUUIDPipe) id: string): object {
+    return this.editorService.getNewsComments(id);
+  }
 }
