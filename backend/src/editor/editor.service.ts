@@ -8,6 +8,7 @@ import { UploadEpaperDto } from './dto/upload-epaper.dto';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { CreateReporterDto } from './dto/create-reporter.dto';
 
 @Injectable()
 export class EditorService {
@@ -60,7 +61,7 @@ export class EditorService {
     };
   }
   uploadEpaper(uploadEpaperDto: UploadEpaperDto): object {
-    return { message: `This will upload Epaper ${uploadEpaperDto.title}` };
+    return { message: `This will upload Epaper ${uploadEpaperDto.title} ${uploadEpaperDto.filename} ` };
   }
   showEpaperById(id: string): object {
     return { message: `This will show an epaper ${id}` };
@@ -85,5 +86,8 @@ export class EditorService {
   }
   getNewsComments(id: string): object {
     return {message: `This will show all the comment of news ${id}`}
+  }
+  createReporter(createReporterDto: CreateReporterDto): object {
+    return {message: `This will create a reporter ${createReporterDto.name}`}
   }
 }

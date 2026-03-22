@@ -11,9 +11,11 @@ import {
   Put,
   ParseUUIDPipe,
   ParseIntPipe,
-  UsePipes,
-  ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MulterError, diskStorage } from 'multer';
 import { EditorService } from './editor.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { ApproveNewsDto } from './dto/approve-news.dto';
@@ -23,6 +25,7 @@ import { UploadEpaperDto } from './dto/upload-epaper.dto';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { CreateReporterDto } from './dto/create-reporter.dto';
 
 @Controller('editor')
 export class EditorController {
@@ -88,8 +91,30 @@ export class EditorController {
   }
 
   @Post('epapers')
-  uploadEpaper(@Body() uploadEpaperDto: UploadEpaperDto) {
-    console.log(uploadEpaperDto.title);
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: (req, myFile, cb) => {
+        if (myFile.originalname.match(/^.*\.(pdf)$/))
+          cb(null, true); // file accepted
+        else {
+          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'pdf'), false); // file rejected
+        }
+      },
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+      storage: diskStorage({
+        destination: './uploads',
+        filename: function (req, myFile, cb) {
+          cb(null, Date.now() + myFile.originalname);
+        },
+      }),
+    }),
+  )
+  uploadEpaper(
+    @Body() uploadEpaperDto: UploadEpaperDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): object {
+    console.log(file.originalname);
+    uploadEpaperDto.filename = file.filename;
     return this.editorService.uploadEpaper(uploadEpaperDto);
   }
 
@@ -126,7 +151,12 @@ export class EditorController {
     return this.editorService.updateTag(id, updateTagDto);
   }
   @Get('news/:id/comments')
-getNewsComments(@Param('id', ParseUUIDPipe) id: string): object {
-  return this.editorService.getNewsComments(id);
+  getNewsComments(@Param('id', ParseUUIDPipe) id: string): object {
+    return this.editorService.getNewsComments(id);
+  }
+  
+  @Post('reporters')
+  createReporter(@Body() createReporterDto: CreateReporterDto): object {
+  return this.editorService.createReporter(createReporterDto);
 }
 }
