@@ -26,6 +26,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterError } from 'multer';
 import * as fs from 'fs';
 import { join } from 'path';
+import { ValidatedFile } from './validate/file.validator';
+import { pdfValidator } from './validate/pdf.validator';
 
 @Controller('reporter')
 export class ReporterController {
@@ -116,13 +118,7 @@ export class ReporterController {
   )
   @UseInterceptors(
     FileInterceptor('file', {
-      fileFilter: (_res, file, cb) => {
-        if (file.originalname.endsWith('.pdf')) {
-          cb(null, true);
-        } else {
-          cb(new BadRequestException('Only PDF or DOC files allowed'), false);
-        }
-      },
+      fileFilter: pdfValidator,
       limits: {
         fileSize: 3 * 1024 * 1024, //30000
       },
@@ -165,13 +161,7 @@ export class ReporterController {
   @Post('media')
   @UseInterceptors(
     FileInterceptor('file', {
-      fileFilter: (res, file, cb) => {
-        if (file.originalname.match(/^.*\.(jpg|webp|png|jpeg|pdf|mp4)$/)) {
-          cb(null, true);
-        } else {
-          cb(new MulterError('LIMIT_UNEXPECTED_FILE', 'file'), false);
-        }
-      },
+      fileFilter: ValidatedFile,
       limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
@@ -184,7 +174,7 @@ export class ReporterController {
     @Body() createMediaDTO: CreateMediaDTO,
     @UploadedFile()
     file: Express.Multer.File,
-  ) {
+  ): object {
     if (file) {
       const uploadPath = join(
         process.cwd(),

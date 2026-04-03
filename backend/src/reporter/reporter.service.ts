@@ -1,3 +1,4 @@
+import { Media } from './entity/media.entity';
 import { CreateMediaDTO } from './dto/Create.media.dto';
 import { UpdateProfileDTO } from './dto/update.profile.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
@@ -5,9 +6,16 @@ import { Injectable } from '@nestjs/common';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
 import { UpdateTagsDTO } from './dto/update.tages.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReporterService {
+  constructor(
+    @InjectRepository(Media)
+    private mediaRepository: Repository<Media>,
+  ) {}
+
   createNews(contentData: SubmitNewsDTO): object {
     // console.log(contentData.title);
     return {
@@ -129,7 +137,10 @@ export class ReporterService {
     return { data: { facebook: 45, whatsapp: 89, total: 151 } };
   }
 
-  createMedia(createMediaDto: CreateMediaDTO) {
-    return { data: { url: createMediaDto.url } };
+  public async createMedia(createMediaDto: CreateMediaDTO) {
+    let createMedia = await this.mediaRepository.create(createMediaDto);
+    createMedia = await this.mediaRepository.save(createMedia);
+    return createMedia;
+
   }
 }
