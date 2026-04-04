@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-@Entity('Media')
-export class Media {
+@Entity('News')
+export class News {
   @PrimaryGeneratedColumn()
   id: number;
   @Column({
@@ -12,15 +12,10 @@ export class Media {
     type: 'varchar',
     nullable: false,
   })
-  type: string;
+  content: string;
   @Column({
     type: 'varchar',
-    nullable: true,
+    nullable: false,
   })
-  url: string;
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
-  alterText: string;
+  status: string;
 }

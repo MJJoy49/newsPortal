@@ -13,7 +13,6 @@ import {
   ParseIntPipe,
   UploadedFile,
   UsePipes,
-  BadRequestException,
 } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
@@ -23,7 +22,6 @@ import { UpdateTagsDTO } from './dto/update.tages.dto';
 import { UpdateProfileDTO } from './dto/update.profile.dto';
 import { CreateMediaDTO } from './dto/Create.media.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MulterError } from 'multer';
 import * as fs from 'fs';
 import { join } from 'path';
 import { ValidatedFile } from './validate/file.validator';
@@ -157,7 +155,6 @@ export class ReporterController {
   getShareCount(@Param('id') id: string) {
     return this.reporterService.getShareCount(id);
   }
-
   @Post('media')
   @UseInterceptors(
     FileInterceptor('file', {
