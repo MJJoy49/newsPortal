@@ -54,7 +54,7 @@ export class ReporterService {
   deleteMediaByID(id: string): object {
     let result: object;
     // console.log(id);
-    if (id == 'E-01') {
+    if (id === 'E-01') {
       result = {
         success: `this data is deleted ${id}`,
       };
@@ -68,7 +68,7 @@ export class ReporterService {
   editNews(id: string, updatenews: UpdateOwnNewsDTO): object {
     if (!updatenews) {
       return {
-        error: 'DTO is not comming here!!!',
+        error: 'Invalid request data: update payload is missing.',
       };
     }
 
@@ -92,7 +92,7 @@ export class ReporterService {
     };
   }
 
-  SubmitOpinion(submitOpinion: SubmitOpinionDTO): object {
+  submitOpinion(submitOpinion: SubmitOpinionDTO): object {
     console.log(submitOpinion.title);
     return {
       success: {
@@ -101,8 +101,12 @@ export class ReporterService {
     };
   }
 
-  updateTagesDTO(id: string, updateTagesDTO: UpdateTagsDTO): object {
-    console.log(updateTagesDTO.tagIds.at(1));
+  updateTags(id: string, updateTagsDTO: UpdateTagsDTO): object {
+    const firstTagId =
+      updateTagsDTO?.tagIds && updateTagsDTO.tagIds.length > 0
+        ? updateTagsDTO.tagIds[0]
+        : undefined;
+    console.log(firstTagId);
     return {
       success: true,
       message: 'News tags updated successfully',
@@ -116,7 +120,7 @@ export class ReporterService {
     // console.log(file?.originalname);
     return {
       success: true,
-      message: 'profile is successfully update',
+      message: 'Profile updated successfully',
     };
   }
 
@@ -134,13 +138,15 @@ export class ReporterService {
   }
 
   getShareCount(id: string): object {
-    return { data: { facebook: 45, whatsapp: 89, total: 151 } };
+    const facebook = 45;
+    const whatsapp = 89;
+    const total = facebook + whatsapp;
+    return { data: { facebook, whatsapp, total } };
   }
 
   public async createMedia(createMediaDto: CreateMediaDTO) {
     let createMedia = await this.mediaRepository.create(createMediaDto);
     createMedia = await this.mediaRepository.save(createMedia);
     return createMedia;
-
   }
 }

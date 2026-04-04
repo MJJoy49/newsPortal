@@ -18,7 +18,7 @@ export class UserDto {
   @IsNotEmpty()
   name: string;
 
-  @IsEmail({},{ message: 'email' })
+  @IsEmail({}, { message: 'email' })
   email: string;
 
   @IsString({ message: 'password' })

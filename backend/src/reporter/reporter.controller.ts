@@ -91,11 +91,11 @@ export class ReporterController {
   submitOpinion(
     @Body(new ValidationPipe({ transform: true }))
     submitOpinion: SubmitOpinionDTO,
-  ) {
-    return this.reporterService.SubmitOpinion(submitOpinion);
+  ): object {
+    return this.reporterService.submitOpinion(submitOpinion);
   }
   @Patch('news/:id/tags') //9
-  updateTages(
+  updateTags(
     @Param('id') newsId: string,
     @Body(
       new ValidationPipe({
@@ -104,9 +104,9 @@ export class ReporterController {
         whitelist: true,
       }),
     )
-    updateTagesDTO: UpdateTagsDTO,
+    updateTagsDTO: UpdateTagsDTO,
   ): object {
-    return this.reporterService.updateTagesDTO(newsId, updateTagesDTO);
+    return this.reporterService.updateTags(newsId, updateTagsDTO);
   }
   @Patch('profile')
   @UsePipes(
@@ -133,7 +133,7 @@ export class ReporterController {
     @Body(new ValidationPipe({ transform: true }))
     updateProfileDTO: UpdateProfileDTO,
     @UploadedFile() file?: Express.Multer.File,
-  ) {
+  ): object {
     if (file) {
       const uploadPath = join(
         process.cwd(),
@@ -147,12 +147,12 @@ export class ReporterController {
   }
 
   @Get('dashboard') //11
-  getDashboard() {
+  getDashboard(): object {
     return this.reporterService.getDashboard();
   }
 
   @Get('news/:id/share-count') //12
-  getShareCount(@Param('id') id: string) {
+  getShareCount(@Param('id') id: string): object {
     return this.reporterService.getShareCount(id);
   }
   @Post('media')

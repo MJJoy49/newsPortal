@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('share_counts')
 export class ShareCount {
-  
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

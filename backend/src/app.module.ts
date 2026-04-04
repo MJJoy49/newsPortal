@@ -7,7 +7,6 @@ import { Media } from './reporter/entity/media.entity';
 import { UsersModule } from './user/users.module';
 import { User } from './user/entity/user.entity';
 
-
 @Module({
   imports: [
     ReporterModule,
@@ -17,7 +16,7 @@ import { User } from './user/entity/user.entity';
       inject: [],
       useFactory: () => ({
         type: 'postgres',
-        entities: [Media,User],
+        entities: [Media, User],
         synchronize: true,
         host: 'localhost',
         port: 5432,

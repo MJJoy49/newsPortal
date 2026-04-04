@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Role } from "../enum/role.enum";
-import { Status } from "../enum/status.enum";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../enum/role.enum';
+import { Status } from '../enum/status.enum';
 
-@Entity({ name: "users" })
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id: string;
@@ -17,14 +17,14 @@ export class User {
   password: string;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: Role,
     default: Role.ADMIN, // Optional default, change if needed
   })
   role: Role;
 
   @Column({
-    type: "enum",
+    type: 'enum',
     enum: Status,
     default: Status.INACTIVE, // Optional default
   })

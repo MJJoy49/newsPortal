@@ -27,9 +27,11 @@ export class UserController {
   }
 
   @Post('createuser')
-  @UsePipes(new ValidationPipe({
-    transform: true,
-  },))
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  )
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: ValidatedFile,
