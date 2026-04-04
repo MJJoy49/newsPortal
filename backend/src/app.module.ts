@@ -1,15 +1,21 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AdminModule } from './admin/admin.module';
+import { EditorModule } from './editor/editor.module';
+import { PublicModule } from './public/public.module';
 import { ReporterModule } from './reporter/reporter.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Media } from './reporter/entity/media.entity';
-import { UsersModule } from './user/users.module';
 import { User } from './user/entity/user.entity';
+import { UsersModule } from './user/users.module';
 
 @Module({
   imports: [
+    EditorModule,
     ReporterModule,
+    AdminModule,
+    PublicModule,
     UsersModule,
     TypeOrmModule.forRootAsync({
       imports: [],
