@@ -7,11 +7,25 @@ import {
   Param,
   Delete,
   Put,
+  Patch,
+  ValidationPipe,
+  UseInterceptors,
+  ParseIntPipe,
+  UploadedFile,
+  UsePipes,
 } from '@nestjs/common';
 import { ReporterService } from './reporter.service';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
+import { UpdateTagsDTO } from './dto/update.tages.dto';
+import { UpdateProfileDTO } from './dto/update.profile.dto';
+import { CreateMediaDTO } from './dto/Create.media.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import * as fs from 'fs';
+import { join } from 'path';
+import { ValidatedFile } from './validate/file.validator';
+import { pdfValidator } from './validate/pdf.validator';
 
 @Controller('reporter')
 export class ReporterController {
@@ -20,52 +34,158 @@ export class ReporterController {
     this.reporterService = reporterService;
   }
 
-  @Post('news')
-  newsSubmit(@Body() contentData: SubmitNewsDTO): object {
-    return this.reporterService.submitNews(contentData);
+  @Post('news') //1
+  createNews(
+    @Body(new ValidationPipe({ transform: true })) contentData: SubmitNewsDTO,
+  ): object {
+    return this.reporterService.createNews(contentData);
   }
 
-  @Get('news')
+  @Get('news') //2
   getNews(
     @Query('status') status: string,
-    @Query('page') page: number,
+    @Query('page', ParseIntPipe) page: number,
   ): object {
     // console.log(status, page);
     return this.reporterService.getNews(status, page);
   }
 
-  @Get('media')
+  @Get('media') //3
   getMedia(@Query('type') type: string): object {
     // console.log(type);
     return this.reporterService.getMedia(type);
   }
 
-  @Get('news/:id')
+  @Get('news/:id') //4
   getNewsByID(@Param('id') id: string): object {
     // console.log(id);
     return this.reporterService.getnewsByID(id);
   }
 
-  @Delete('media/:id')
+  @Delete('media/:id') //5
   deleteMediaByID(@Param('id') id: string): object {
     // console.log(id);
     return this.reporterService.deleteMediaByID(id);
   }
 
-  @Put('news/:id')
+  @Put('news/:id') //6
   editNews(
     @Param('id') id: string,
-    @Body() updatenews: UpdateOwnNewsDTO,
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    updatenews: UpdateOwnNewsDTO,
   ): object {
     return this.reporterService.editNews(id, updatenews);
   }
 
-  @Get('profile')
+  @Get('profile') //7
   getProfile(): object {
     return this.reporterService.getProfile();
   }
-  @Post('opinion')
-  submitOpinion(@Body() submitOpinion: SubmitOpinionDTO) {
-    return this.reporterService.SubmitOpinion(submitOpinion);
+  @Post('opinion') //8
+  submitOpinion(
+    @Body(new ValidationPipe({ transform: true }))
+    submitOpinion: SubmitOpinionDTO,
+  ): object {
+    return this.reporterService.submitOpinion(submitOpinion);
+  }
+  @Patch('news/:id/tags') //9
+  updateTags(
+    @Param('id') newsId: string,
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        forbidNonWhitelisted: true,
+        whitelist: true,
+      }),
+    )
+    updateTagsDTO: UpdateTagsDTO,
+  ): object {
+    return this.reporterService.updateTags(newsId, updateTagsDTO);
+  }
+  @Patch('profile')
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  )
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: pdfValidator,
+      limits: {
+        fileSize: 3 * 1024 * 1024, //30000
+      },
+      // storage: diskStorage({
+      //   destination: './uploads',
+      //   filename: (req, file, cb) => {
+      //     cb(null, Date.now() + '-' + file.originalname);
+      //     console.log(file.originalname);
+      //   },
+      // }),
+    }),
+  )
+  updateProfile(
+    @Body(new ValidationPipe({ transform: true }))
+    updateProfileDTO: UpdateProfileDTO,
+    @UploadedFile() file?: Express.Multer.File,
+  ): object {
+    if (file) {
+      const uploadPath = join(
+        process.cwd(),
+        'uploads',
+        Date.now() + '-' + file.originalname,
+      );
+      fs.writeFileSync(uploadPath, file.buffer);
+    }
+
+    return this.reporterService.updateProfile(updateProfileDTO, file);
+  }
+
+  @Get('dashboard') //11
+  getDashboard(): object {
+    return this.reporterService.getDashboard();
+  }
+
+  @Get('news/:id/share-count') //12
+  getShareCount(@Param('id') id: string): object {
+    return this.reporterService.getShareCount(id);
+  }
+  @Post('media')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: ValidatedFile,
+      limits: { fileSize: 50 * 1024 * 1024 },
+    }),
+  )
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  )
+  createMedia(
+    @Body() createMediaDTO: CreateMediaDTO,
+    @UploadedFile()
+    file: Express.Multer.File,
+  ): object {
+    if (file) {
+      const uploadPath = join(
+        process.cwd(),
+        'uploads',
+        Date.now() +
+          '- ' +
+          file.originalname.split('.')[1] +
+          '-' +
+          file.originalname,
+      );
+      fs.writeFileSync(uploadPath, file.buffer);
+      createMediaDTO.url = uploadPath;
+    }
+
+    return this.reporterService.createMedia(createMediaDTO);
   }
 }

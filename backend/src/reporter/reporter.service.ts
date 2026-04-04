@@ -1,12 +1,23 @@
+import { Media } from './entity/media.entity';
+import { CreateMediaDTO } from './dto/Create.media.dto';
+import { UpdateProfileDTO } from './dto/update.profile.dto';
 import { SubmitOpinionDTO } from './dto/submit.opinion.dto';
 import { Injectable } from '@nestjs/common';
 import { SubmitNewsDTO } from './dto/submit.news.dto';
 import { UpdateOwnNewsDTO } from './dto/updateOwnNews.dto';
+import { UpdateTagsDTO } from './dto/update.tages.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ReporterService {
-  submitNews(contentData: SubmitNewsDTO): object {
-    console.log(contentData.title);
+  constructor(
+    @InjectRepository(Media)
+    private mediaRepository: Repository<Media>,
+  ) {}
+
+  createNews(contentData: SubmitNewsDTO): object {
+    // console.log(contentData.title);
     return {
       data: {
         status: 'pending',
@@ -26,12 +37,12 @@ export class ReporterService {
     // console.log(type);
     return {
       data: {
-        media: 'hello this is media',
+        media: `hello this is ${type}`,
       },
     };
   }
 
-  getnewsByID(id: string) {
+  getnewsByID(id: string): object {
     // console.log(id);
     return {
       data: {
@@ -40,12 +51,12 @@ export class ReporterService {
     };
   }
 
-  deleteMediaByID(id: string) {
+  deleteMediaByID(id: string): object {
     let result: object;
     // console.log(id);
-    if (id == 'E-01') {
+    if (id === 'E-01') {
       result = {
-        success: 'this data is deleted',
+        success: `this data is deleted ${id}`,
       };
     } else {
       result = {
@@ -55,16 +66,15 @@ export class ReporterService {
     return result;
   }
   editNews(id: string, updatenews: UpdateOwnNewsDTO): object {
-    if (updatenews.isPublish) {
-      return { news: 'news is publish' };
-    } else if (
-      !(updatenews.categoryId == 'Draft' || updatenews.categoryId == 'pending')
-    ) {
+    if (!updatenews) {
       return {
-        errorMessage: " Can'\t edit this Artical ",
+        error: 'Invalid request data: update payload is missing.',
       };
     }
 
+    if (updatenews.isPublish) {
+      return { news: 'news is publish' };
+    }
     return {
       success: true,
     };
@@ -82,12 +92,61 @@ export class ReporterService {
     };
   }
 
-  SubmitOpinion(submitOpinion: SubmitOpinionDTO) {
+  submitOpinion(submitOpinion: SubmitOpinionDTO): object {
     console.log(submitOpinion.title);
     return {
       success: {
         Status: 'pending',
       },
     };
+  }
+
+  updateTags(id: string, updateTagsDTO: UpdateTagsDTO): object {
+    const firstTagId =
+      updateTagsDTO?.tagIds && updateTagsDTO.tagIds.length > 0
+        ? updateTagsDTO.tagIds[0]
+        : undefined;
+    console.log(firstTagId);
+    return {
+      success: true,
+      message: 'News tags updated successfully',
+    };
+  }
+
+  updateProfile(
+    updateReporterDTO: UpdateProfileDTO,
+    file?: Express.Multer.File,
+  ): object {
+    // console.log(file?.originalname);
+    return {
+      success: true,
+      message: 'Profile updated successfully',
+    };
+  }
+
+  getDashboard(): object {
+    return {
+      data: {
+        today: {
+          submit: 3,
+        },
+        thismonth: {
+          submit: 45,
+        },
+      },
+    };
+  }
+
+  getShareCount(id: string): object {
+    const facebook = 45;
+    const whatsapp = 89;
+    const total = facebook + whatsapp;
+    return { data: { facebook, whatsapp, total } };
+  }
+
+  public async createMedia(createMediaDto: CreateMediaDTO) {
+    let createMedia = await this.mediaRepository.create(createMediaDto);
+    createMedia = await this.mediaRepository.save(createMedia);
+    return createMedia;
   }
 }
